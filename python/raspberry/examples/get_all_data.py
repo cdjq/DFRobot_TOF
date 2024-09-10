@@ -32,13 +32,16 @@ def setup():
     
 
 def loop():
-	data = tof.get_all_data()
-	for index, value in enumerate(data):
-		print(value, end=' ')
-		if (index + 1) % 4 == 0:
-			print()  # 换行
-	print("-------------------")
-	time.sleep(1)
+  data = tof.get_all_data()
+  for index in range(0, len(data), 2):
+    high_byte = data[index + 1]
+    low_byte = data[index ]
+    combined_value = (high_byte << 8) | low_byte  # 组合高低字节
+    print(combined_value, end=' ')
+    if (index // 2 + 1) % 4 == 0:
+      print()  # 换行
+  print("-------------------")
+  time.sleep(1)
   
     
 if __name__ == "__main__":

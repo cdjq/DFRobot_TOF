@@ -288,6 +288,8 @@ class DFRobot_TOF:
 						print("Length read failed or too short.")  
 						return rslt
 					length = (lenL[1] << 2) | lenL[0]  
+					if length > 128:
+						return rslt 
 					#print(length)
 					rslt[0] = self.ERR_CODE_NONE
 					rslt += [status, command, lenL[0], lenL[1]]
