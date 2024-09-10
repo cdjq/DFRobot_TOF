@@ -1,6 +1,6 @@
-/**!
+/*!
  * @file obstacleAvoidance.ino
- * @brief 这是一个基础避障的demo,运行demo将进行基础避障
+ * @brief This is a basic obstacle avoidance demo. Running this demo will perform basic obstacle avoidance.
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @license     The MIT License (MIT)
  * @author [tangjie](jie.tang@dfrobot.com)
@@ -8,12 +8,12 @@
  * @date  2024-08-14
  * @url https://github.com/DFRobot/DFRobot_TOF
  */
+
 #include "DFRobot_tof.h"
 
 DFRobot_tof tof;
 uint16_t buf[2];
 
-#define NUM_SECTORS 8
 
 #define L_M  1
 #define R_M 2
@@ -40,14 +40,14 @@ void motor(uint8_t speed, uint8_t dir, uint8_t mt){
     Wire.endTransmission();
 }
 
-// 前进
+// Move forward
 void moveForward() {
   motor(60, CW, L_M);
   motor(60, CW, R_M);
   
 }
 
-// 后退
+// Move backward
 void moveBackward() {
  
   motor(40, CCW, L_M);
@@ -55,27 +55,27 @@ void moveBackward() {
  
 }
 
-// 左转
+// Turn left
 void turnLeft() {
   motor(40, CCW, L_M);
   motor(40, CW, R_M);
 }
 
-// 右转
+// Turn right
 void turnRight() {
   motor(40, CW, L_M);
   motor(40, CCW, R_M);
  
 }
 
-//左右轮速差
-// 左转
+// Difference in wheel speeds between left and right
+// Turn left
 void turnLeft1(uint8_t speed) {
   motor(20, CW, L_M);
   motor(120, CW, R_M);
 }
 
-// 右转
+// Turn right
 void turnRight1(uint8_t speed) {
   motor(120, CW, L_M);
   motor(20, CW, R_M);
@@ -90,7 +90,7 @@ void setup(void){
   }
    Serial.println("begin success");
 
-  //配置避障距离15厘米
+ // Set the obstacle avoidance distance to 15 centimeters
   while(tof.configAvoidance(15) != 0){
     Serial.println("init avoid error !!!!!");
     delay(1000);
@@ -101,9 +101,10 @@ void setup(void){
 }
 
 void loop(void){
-  uint8_t dir = 0,urgency = 0;
-  //获取返回避障建议
-  tof.getAvoid(&dir,&urgency);
+  // Get and return obstacle avoidance suggestions
+  tof.requestObstacleSensorData();
+  uint8_t dir = tof.getDir();
+  uint8_t urgency = tof.getEmergencyFlag();
  switch(dir){
     case FORWARD:
       moveForward();

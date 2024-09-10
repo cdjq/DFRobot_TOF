@@ -1,13 +1,13 @@
-# DFRobot_TCS3430
+# DFRobot_TOF
 - [English Version](./README.md)
 
-TCS3430具有先进的数字环境光感测（ALS）和CIE 1931三刺激色彩感测（XYZ），CIE1931 XYZ三刺激模型是根据人眼中三种视锥细胞设立的XYZ标准，CIE1931 XYZ色彩空间包含普通视力的人可以看到的所有色彩感觉。TCS3430的光谱响应几乎和人眼一致，可以实现高精度的照度和色温测量，因此可以实现所测即所见。
+这是一个获取TOF原始数据和避障建议的用户库。
 
-![](./resources/images/SEN0403.png)
+![](./resources/images/SEN0628.png)
 
-## 产品链接(https://www.dfrobot.com.cn/goods-3083.html)
+## 产品链接(https://www.dfrobot.com.cn)
 
-    SKU：DFR0464
+    SKU：SEN0628
 
 ## 目录
 
@@ -19,8 +19,7 @@ TCS3430具有先进的数字环境光感测（ALS）和CIE 1931三刺激色彩�
 * [创作者](#创作者)
 
 ## 概述
-
-X/Y/Z刺激光和红外数据的检测
+  一个获取TOF原始数据和避障建议的用户库。
 
 ## 库安装
 
@@ -29,134 +28,82 @@ X/Y/Z刺激光和红外数据的检测
 ## 方法
 
 ```C++
- /**
-   * @brief  Initialization function
-   * @return Whether the device is on or not. return true succeed ;return false failed.
-   */
-  bool begin();
+    /**
+     * @fn begin
+     * @brief 初始化传感器
+     * @return NULL
+     */
+    uint8_t begin(void);
 
-  /**
-   * @brief  Config the wait timer 
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setWaitTimer(bool mode = true);
+    /**
+     * @fn getAllDataConfig
+     * @brief 获取全部数据的配置
+     * @param matrix 配置传感器采样矩阵
+     * @param threshold 配置传感器报警阈值，范围50~3000，低于50按照原始数据输出
+     * @return 返回配置状态
+     * @retval 0 成功
+     * @retval 1 失败
+     */
+    uint8_t getAllDataConfig(uint8_t matrix, uint16_t threshold = 0);
 
-  /**
-   * @brief  Set the function of wait long time
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setWaitLong(bool mode = true);
+    /**
+     * @fn configAvoidance
+     * @brief 初始化避障
+     * @param wall 配置避障距离,单位：厘米
+     */
+    uint8_t configAvoidance(uint8_t wall);
 
-  /**
-   * @brief  Set the internal integration time of the  four-channel ADCs
-   * @param  aTIme  integration time
-   */
-  void setIntegrationTime(uint8_t aTime);
+    /**
+     * @fn getAllData
+     * @brief 获取全部数据
+     * @param buf 存储数据
+     */
+    uint8_t getAllData(void *buf);
 
-  /**
-   * @brief  set wait time 
-   * @param  wTime  wait time 
-   */
-  void setWaitTime(uint8_t wTime);
+    /**
+     * @fn getFixedPointData
+     * @brief 获取指定点的数据
+     * @param x 坐标x
+     * @param y 坐标y
+     * @return 返回获取的数据
+     */
+    uint16_t getFixedPointData(uint8_t x, uint8_t y);
 
-  /**
-   * @brief  Set the ALS gain 
-   * @param  aGain  the value of gain
-   */
-  void setALSGain(uint8_t aGain);
+    /**
+     * @fn requestObstacleSensorData
+     * @brief 请求避障的数据
+     * @return 返回获取状态
+     */
+    uint8_t requestObstacleSensorData(void);
 
-  /**
-   * @brief  Set ALS interrupt Persistence
-   * @param  apers :ALS Interrupt Persistence
-   */
-  void setInterruptPersistence(uint8_t apers);
+    /**
+     * @fn getDir
+     * @brief 获取避障方向建议
+     * @return 返回避障建议
+     */
+    uint8_t getDir(void);
 
-  /**
-   * @brief  get device status
-   * @return  status
-   */
-  uint8_t getDeviceStatus();
-  
-  /**
-   * @brief  get channel 0 value
-   * @return  the z data
-   */
-  uint16_t getZData();
+    /**
+     * @fn getEmergencyFlag
+     * @brief 获取紧急避障标志
+     * @return 返回避障标志
+     */
+    uint8_t getEmergencyFlag(void);
 
-  /**
-   * @brief  get channel 1 value
-   * @return  the y data
-   */
-  uint16_t getYData();
+    /**
+     * @fn getObstacleDistance
+     * @brief 请求障碍物距离
+     * @return 返回请求状态
+     */
+    uint8_t requestObstacleDistance(void); 
 
-  /**
-   * @brief  get channel 2 value
-   * @return  the IR1 data 
-   */
-  uint16_t getIR1Data();
-  
-  /**
-   * @brief  get channel 3 value
-   * @return  the x data
-   */
-  uint16_t getXData();
-  
-  /**
-   * @brief  get channel 3 value
-   * @return  the IR2 data
-   */
-  uint16_t getIR2Data();
-  /**
-   * @brief  Set the ALS High gain 
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setHighGAIN(bool mode);
+    /**
+     * @fn getDistance
+     * @brief 获取距离
+     * @return 返回距离
+     */
+    uint16_t getDistance(eDir_t dir);
 
-  /**
-   * @brief  If this bit is set, all flag bits in the STATUS register will be reset whenever the STATUS register is read over I2C.
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setIntReadClear(bool mode = true);
-
-  /**
-   * @brief  Config the function of 'sleep after interruption'
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setSleepAfterInterrupt(bool mode = true);
-
-  /**
-   * @brief  set az mode
-   * @param  mode  :0,Always start at zero when searching the best offset value
-                   :1,Always start at the previous (offset_c) with the auto-zero mechanism
-   */
-  void setAutoZeroMode(uint8_t mode);
-  
-  /**
-   * @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
-   * @param  value :0,never
-                   :7,only at first ALS cycle
-                   :n, every nth time
-   */
-  void setAutoZeroNTHIteration(uint8_t value);
-
-  /**
-   * @brief  Config the ALS saturation interruption
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setALSSaturationInterrupt(bool mode = true);
-
-  /**
-   * @brief  Config the ALS interruption
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setALSInterrupt(bool mode = true);
-
-  /**
-   * @brief  Set the channel 0 interrupt threshold
-   * @param  thresholdL :the low 16 bit values
-   * @param  thresholdH :the high 16 bit values
-   */
-  void setCH0IntThreshold(uint16_t thresholdL,uint16_t thresholdH);
 ```
 
 ## 兼容性
@@ -173,11 +120,11 @@ X/Y/Z刺激光和红外数据的检测
 
 ## 历史
 
-- 日期 2023-2-24
+- 日期 2024-9-9 
 - 版本 V1.0.0
 
 
 ## 创作者
 
-Written by yangfeng(feng.yang@dfrobot.com), 2021. (Welcome to our [website](https://www.dfrobot.com/))
+Written by tangjie(jie.tang@dfrobot.com), 2024. (Welcome to our [website](https://www.dfrobot.com/))
 

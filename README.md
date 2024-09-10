@@ -1,13 +1,13 @@
-# DFRobot_TCS3430
+# DFRobot_TOF
 
 - [中文版](./README_CN.md)
 
-The device featrues advanced digital Ambient Light Sensing (ALS) and CIE 1931 Tristimulus Color Sensing (XYZ). Each of the channels has a filter to control its optical response, which allows the device to accurately measure ambient light and sense color. These measurements are used to calculate chromaticity, illuminance and color temperatrue, all of which are used to support various potential applications.
+This is a user library for retrieving TOF sensor raw data and providing obstacle avoidance suggestions.
 
-![](./resources/images/SEN0403.png)
+![](./resources/images/SEN0628.png)
 
-## Product Link (https://www.dfrobot.com/product-2257.html)
-    SKU:SEN0403
+## Product Link (https://www.dfrobot.com)
+    SKU:SEN0628
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ The device featrues advanced digital Ambient Light Sensing (ALS) and CIE 1931 Tr
 * [Credits](#credits)
 
 ## Summary
-Detection of XYZ tristimulus and infrared data
+This is a user library for retrieving TOF sensor raw data and providing obstacle avoidance suggestions.
 
 ## Installation
 
@@ -28,134 +28,82 @@ To use this library, download the library file first, paste it into the \Arduino
 ## Methods
 
 ```C++
- /**
-   * @brief  Initialization function
-   * @return Whether the device is on or not. return true succeed ;return false failed.
-   */
-  bool begin();
+    /**
+     * @fn begin
+     * @brief Initializes the sensor
+     * @return NULL
+     */
+    uint8_t begin(void);
 
-  /**
-   * @brief  Config the wait timer 
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setWaitTimer(bool mode = true);
+    /**
+     * @fn getAllDataConfig
+     * @brief Configures the retrieval of all data
+     * @param matrix Configuration matrix for sensor sampling
+     * @param threshold Sensor alarm threshold, range from 50 to 3000; below 50, output raw data
+     * @return Returns the configuration status
+     * @retval 0 Success
+     * @retval 1 Failure
+     */
+    uint8_t getAllDataConfig(uint8_t matrix, uint16_t threshold = 0);
 
-  /**
-   * @brief  Set the function of wait long time
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setWaitLong(bool mode = true);
+    /**
+     * @fn configAvoidance
+     * @brief Initializes obstacle avoidance
+     * @param wall Configures the obstacle avoidance distance, in centimeters
+     */
+    uint8_t configAvoidance(uint8_t wall);
 
-  /**
-   * @brief  Set the internal integration time of the  four-channel ADCs
-   * @param  aTIme  integration time
-   */
-  void setIntegrationTime(uint8_t aTime);
+    /**
+     * @fn getAllData
+     * @brief Retrieves all data
+     * @param buf Buffer to store the data
+     */
+    uint8_t getAllData(void *buf);
 
-  /**
-   * @brief  set wait time 
-   * @param  wTime  wait time 
-   */
-  void setWaitTime(uint8_t wTime);
+    /**
+     * @fn getFixedPointData
+     * @brief Retrieves data for a specific point
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return Returns the retrieved data
+     */
+    uint16_t getFixedPointData(uint8_t x, uint8_t y);
 
-  /**
-   * @brief  Set the ALS gain 
-   * @param  aGain  the value of gain
-   */
-  void setALSGain(uint8_t aGain);
+    /**
+     * @fn requestObstacleSensorData
+     * @brief Requests obstacle avoidance data
+     * @return Returns the retrieval status
+     */
+    uint8_t requestObstacleSensorData(void);
 
-  /**
-   * @brief  Set ALS interrupt Persistence
-   * @param  apers :ALS Interrupt Persistence
-   */
-  void setInterruptPersistence(uint8_t apers);
+    /**
+     * @fn getDir
+     * @brief Retrieves obstacle avoidance direction suggestions
+     * @return Returns the avoidance suggestions
+     */
+    uint8_t getDir(void);
 
-  /**
-   * @brief  get device status
-   * @return  status
-   */
-  uint8_t getDeviceStatus();
-  
-  /**
-   * @brief  get channel 0 value
-   * @return  the z data
-   */
-  uint16_t getZData();
+    /**
+     * @fn getEmergencyFlag
+     * @brief Retrieves the emergency obstacle avoidance flag
+     * @return Returns the obstacle avoidance flag
+     */
+    uint8_t getEmergencyFlag(void);
 
-  /**
-   * @brief  get channel 1 value
-   * @return  the y data
-   */
-  uint16_t getYData();
+    /**
+     * @fn getObstacleDistance
+     * @brief Requests the distance to obstacles
+     * @return Returns the request status
+     */
+    uint8_t requestObstacleDistance(void);
 
-  /**
-   * @brief  get channel 2 value
-   * @return  the IR1 data 
-   */
-  uint16_t getIR1Data();
-  
-  /**
-   * @brief  get channel 3 value
-   * @return  the x data
-   */
-  uint16_t getXData();
-  
-  /**
-   * @brief  get channel 3 value
-   * @return  the IR2 data
-   */
-  uint16_t getIR2Data();
-  /**
-   * @brief  Set the ALS High gain 
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setHighGAIN(bool mode);
+    /**
+     * @fn getDistance
+     * @brief Retrieves the distance
+     * @return Returns the distance
+     */
+    uint16_t getDistance(eDir_t dir);
 
-  /**
-   * @brief  If this bit is set, all flag bits in the STATUS register will be reset whenever the STATUS register is read over I2C.
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setIntReadClear(bool mode = true);
-
-  /**
-   * @brief  Config the function of 'sleep after interruption'
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setSleepAfterInterrupt(bool mode = true);
-
-  /**
-   * @brief  set az mode
-   * @param  mode  :0,Always start at zero when searching the best offset value
-                   :1,Always start at the previous (offset_c) with the auto-zero mechanism
-   */
-  void setAutoZeroMode(uint8_t mode);
-  
-  /**
-   * @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
-   * @param  value :0,never
-                   :7,only at first ALS cycle
-                   :n, every nth time
-   */
-  void setAutoZeroNTHIteration(uint8_t value);
-
-  /**
-   * @brief  Config the ALS saturation interruption
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setALSSaturationInterrupt(bool mode = true);
-
-  /**
-   * @brief  Config the ALS interruption
-   * @param  mode  true : enable ; false : disenable
-   */
-  void setALSInterrupt(bool mode = true);
-
-  /**
-   * @brief  Set the channel 0 interrupt threshold
-   * @param  thresholdL :the low 16 bit values
-   * @param  thresholdH :the high 16 bit values
-   */
-  void setCH0IntThreshold(uint16_t thresholdL,uint16_t thresholdH);
 
 ```
 
@@ -175,10 +123,10 @@ Arduino MEGA2560 | √ | | |
 
 ## History
 
-- data 2023-02-24
+- data 2024-09-09
 - version V1.0
 
 
 ## Credits
 
-Written by [yangfeng]<feng.yang@dfrobot.com>,2021,(Welcome to our [website](https://www.dfrobot.com/))
+Written by tangjie(jie.tang@dfrobot.com), 2024. (Welcome to our [website](https://www.dfrobot.com/))

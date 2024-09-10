@@ -1,3 +1,14 @@
+/*!
+ * @file DFRobot_tof.cpp
+ * @brief This is the implementation file for DFRobot_tof
+ * @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ * @license     The MIT License (MIT)
+ * @author [TangJie](jie.tang@dfrobot.com)
+ * @version  V1.0
+ * @date  2024-04-01
+ * @url https://github.com/DFRobot/DFRobot_TOF
+ */
+
 #include "DFRobot_tof.h"
 
 #define CMD_SETMODE 1
@@ -31,6 +42,12 @@
 #define ERR_CODE_SKU                0x08 ///< The SKU is an invalid SKU, or unsupported by SCI Acquisition Module
 #define ERR_CODE_S_NO_SPACE         0x09 ///< Insufficient memory of I2C peripheral(slave)
 #define ERR_CODE_I2C_ADRESS         0x0A ///< Invalid I2C address
+
+static uint8_t outDir = 0;
+static uint8_t outEmergencyFlag = 0;
+static uint16_t outLeft = 0;
+static uint16_t outRight = 0;
+static uint16_t outMiddle = 0;
 
 typedef struct{
   uint8_t head;
@@ -85,6 +102,7 @@ uint8_t DFRobot_tof::getAllDataConfig(uint8_t matrix, uint16_t threshold){
   if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
     length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
     if(rcvpkt) free(rcvpkt);
+    delay(5000);
     return 0;
   }
   return 1;
@@ -175,63 +193,7 @@ uint16_t DFRobot_tof::getFixedPointData(uint8_t x, uint8_t y){
   return 1;
 }
 
-uint8_t DFRobot_tof::getLineData(uint8_t line, void *buf){
-  uint8_t length = 1;
-  uint8_t errorCode;
-  pCmdSendPkt_t sendpkt = NULL;
-  sendpkt = (pCmdSendPkt_t)malloc(sizeof(sCmdSendPkt_t) + length);
-  if(sendpkt == NULL) return 1;
-  sendpkt->head = 0x55;
-  sendpkt->argsNumH = ((length + 1) >> 8) & 0xFF;
-  sendpkt->argsNumL = (length + 1) & 0xFF;
-  sendpkt->cmd = CMD_LINE;
-  sendpkt->args[0] = line;
-  
-  length += sizeof(sCmdSendPkt_t);
-  DBG(length);
-  sendPacket(sendpkt, length , true);
-  free(sendpkt);
-  pCmdRecvPkt_t rcvpkt = (pCmdRecvPkt_t)recvPacket(CMD_LINE, &errorCode);
-  if((rcvpkt != NULL) && (rcvpkt->status == STATUS_FAILED)) errorCode = rcvpkt->buf[0];
-  if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
-    length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
-    DBG(length);
-    memcpy(buf,rcvpkt->buf,length);
-    if(rcvpkt) free(rcvpkt);
-    return 0;
-  }
-  return 1;
-}
-
-uint8_t DFRobot_tof::getListData(uint8_t list, void *buf){
-  uint8_t length = 1;
-  uint8_t errorCode;
-  pCmdSendPkt_t sendpkt = NULL;
-  sendpkt = (pCmdSendPkt_t)malloc(sizeof(sCmdSendPkt_t) + length);
-  if(sendpkt == NULL) return 1;
-  sendpkt->head = 0x55;
-  sendpkt->argsNumH = ((length + 1) >> 8) & 0xFF;
-  sendpkt->argsNumL = (length + 1) & 0xFF;
-  sendpkt->cmd = CMD_LIST;
-  sendpkt->args[0] = list;
-  
-  length += sizeof(sCmdSendPkt_t);
-  DBG(length);
-  sendPacket(sendpkt, length , true);
-  free(sendpkt);
-  pCmdRecvPkt_t rcvpkt = (pCmdRecvPkt_t)recvPacket(CMD_LIST, &errorCode);
-  if((rcvpkt != NULL) && (rcvpkt->status == STATUS_FAILED)) errorCode = rcvpkt->buf[0];
-  if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
-    length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
-    DBG(length);
-    memcpy(buf,rcvpkt->buf,length);
-    if(rcvpkt) free(rcvpkt);
-    return 0;
-  }
-  return 1;
-}
-
-uint8_t DFRobot_tof::getAvoid(uint8_t *dir, uint8_t *urgency){
+uint8_t DFRobot_tof::requestObstacleSensorData(void){
   uint8_t length = 0;
   uint8_t errorCode;
   pCmdSendPkt_t sendpkt = NULL;
@@ -251,13 +213,8 @@ uint8_t DFRobot_tof::getAvoid(uint8_t *dir, uint8_t *urgency){
   if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
     length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
     DBG(length);
-    if(dir != NULL && urgency != NULL){
-      *dir = rcvpkt->buf[0];
-      *urgency = rcvpkt->buf[1];
-    }else{
-      return 1;
-    }
-    
+    outDir = rcvpkt->buf[0];
+    outEmergencyFlag = rcvpkt->buf[1];
     //memcpy(buf,rcvpkt->buf,length);
     if(rcvpkt) free(rcvpkt);
     return 0;
@@ -265,7 +222,15 @@ uint8_t DFRobot_tof::getAvoid(uint8_t *dir, uint8_t *urgency){
   return 1;
 }
 
-uint8_t DFRobot_tof::getObstacleDistance(uint16_t *L, uint16_t *M, uint16_t *R){
+uint8_t DFRobot_tof::getDir(void){
+  return outDir;
+}
+
+uint8_t DFRobot_tof::getEmergencyFlag(void){
+  return outEmergencyFlag;
+}
+
+uint8_t DFRobot_tof::requestObstacleDistance(void){
   uint8_t length = 0;
   uint8_t errorCode;
   pCmdSendPkt_t sendpkt = NULL;
@@ -285,14 +250,9 @@ uint8_t DFRobot_tof::getObstacleDistance(uint16_t *L, uint16_t *M, uint16_t *R){
   if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
     length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
     DBG(length);
-    if(L != NULL && M !=  NULL && R != NULL){
-      *L = rcvpkt->buf[0] | rcvpkt->buf[1] << 8;
-      *M = rcvpkt->buf[2] | rcvpkt->buf[3] << 8;
-      *R =rcvpkt->buf[4] | rcvpkt->buf[5] << 8;
-    }else{
-      return 1;
-    }
-    
+    outLeft = rcvpkt->buf[0] | rcvpkt->buf[1] << 8;
+    outMiddle = rcvpkt->buf[2] | rcvpkt->buf[3] << 8;
+    outRight =rcvpkt->buf[4] | rcvpkt->buf[5] << 8;
     if(rcvpkt) free(rcvpkt);
     return 0;
   }
@@ -300,6 +260,23 @@ uint8_t DFRobot_tof::getObstacleDistance(uint16_t *L, uint16_t *M, uint16_t *R){
 
 }
 
+uint16_t DFRobot_tof::getDistance(eDir_t dir){
+  uint16_t _ret = 0;
+  switch(dir){
+    case eLeft:
+      _ret = outLeft;
+    break;
+    case eMiddle:
+    _ret = outMiddle;
+    break;
+    case eRight:
+    _ret = outRight;
+    break;
+    default:
+    break;
+  }
+  return _ret;
+}
 
 
 void DFRobot_tof::sendPacket(void *pkt, int length, bool stop){
@@ -370,12 +347,12 @@ void * DFRobot_tof::recvPacket(uint8_t cmd, uint8_t *errorCode){
       }
       default:
         //restData();
-        delay(50);
+        delay(10);
         break;
     }
     }
     
-    delay(50);
+    delay(17);
   }
   if(errorCode) *errorCode = ERR_CODE_RES_TIMEOUT; //Receive packet timeout
   free(recvPktPtr);
@@ -392,9 +369,7 @@ int DFRobot_tof::recvData(void *data, int len){
     DBG("pBuf ERROR!! : null pointer");
     return 0;
   }
-  //DBG(len);
   while(remain){
-     //DBG("c");
     len = remain > I2C_ACHE_MAX_LEN ? I2C_ACHE_MAX_LEN : remain;
     remain -= len;
 #if defined(ESP32)
@@ -402,11 +377,9 @@ int DFRobot_tof::recvData(void *data, int len){
 #else
     if(remain){ _pWire->requestFrom(_addr, len, false);}
 #endif
-    else{_pWire->requestFrom(_addr, len, true);}
+  else{_pWire->requestFrom(_addr, len, true);}
     for(int i = 0; i < len; i++){
       pBuf[i] = _pWire->read();
-      //DBG(pBuf[i],HEX);
-      //delay(1);
       yield();
     }
     pBuf += len;

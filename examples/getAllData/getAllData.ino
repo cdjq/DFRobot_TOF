@@ -1,6 +1,6 @@
-/**!
+/*!
  * @file getAllData.ino
- * @brief 这是一个获取tof全部数据的demo，运行demo将可以获取tof全部数据
+ * @brief This is a demo for retrieving all TOF data. Running this demo will allow you to get all TOF data.
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @license     The MIT License (MIT)
  * @author [tangjie](jie.tang@dfrobot.com)
@@ -8,8 +8,8 @@
  * @date  2024-08-14
  * @url https://github.com/DFRobot/DFRobot_TOF
  */
+
 #include "DFRobot_tof.h"
-#define DATA8X8 ///获取8x8矩阵数据
 #ifdef DATA8X8
 #define DATA 8
 #else
@@ -36,7 +36,7 @@ void setup(void){
 
 void loop(void){
   tof.getAllData(buf);
-  for (int i = 0; i < DATA * DATA; i++) {//存储数据
+  for (int i = 0; i < DATA * DATA; i++) {
     snprintf(report, sizeof(report), "Zone : %3d, Distance : %4d mm\r\n",
                  i,
                  buf[i]);

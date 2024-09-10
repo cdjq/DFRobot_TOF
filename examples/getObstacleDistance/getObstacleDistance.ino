@@ -1,6 +1,6 @@
-/**!
+/*!
  * @file getObstacleDistance.ino
- * @brief 这是一个获取tof障碍物距离的demo,运行demo将打印障碍物距离
+ * @brief This is a demo to retrieve the distance to an obstacle using the TOF sensor. Running this demo will print the distance to the obstacle.
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @license     The MIT License (MIT)
  * @author [tangjie](jie.tang@dfrobot.com)
@@ -8,24 +8,17 @@
  * @date  2024-08-14
  * @url https://github.com/DFRobot/DFRobot_TOF
  */
+
 #include "DFRobot_tof.h"
-#define DATA8X8 ///获取8x8矩阵数据
-#ifdef DATA8X8
-#define DATA 8
-#else
-#define DATA 4
-#endif
 
 DFRobot_tof tof;
-uint16_t buf[DATA];
-char report[128];
 void setup(void){
   Serial.begin(115200);
   while(tof.begin() != 0){
     Serial.println("begin error !!!!!");
   }
    Serial.println("begin success");
- //配置避障距离15厘米
+ // Set the obstacle avoidance distance to 15 centimeters
   while(tof.configAvoidance(15) != 0){
     Serial.println("init avoid error !!!!!");
     delay(1000);
@@ -35,8 +28,10 @@ void setup(void){
 }
 
 void loop(void){
-  uint16_t L = 0, M = 0, R = 0;
-  tof.getObstacleDistance(&L,&M,&R);
+  tof.requestObstacleDistance();
+  uint16_t L = tof.getDistance(eLeft);
+  uint16_t M = tof.getDistance(eMiddle);
+  uint16_t R = tof.getDistance(eRight);
   Serial.print("L: ");
   Serial.print(L);
   Serial.print(" ,M: ");
@@ -45,5 +40,5 @@ void loop(void){
   Serial.print(R);
   
   Serial.println("------------------------------");
-  delay(10);
+  delay(100);
 }

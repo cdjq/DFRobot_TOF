@@ -1,6 +1,6 @@
-/**!
+/*!
  * @file getFixedPoint.ino
- * @brief 这是一个获取tof指定点数据的demo,运行demo将获取指定点的数据
+ * @brief This is a demo to retrieve data from a specific point of the TOF sensor. Running this demo will obtain data from the specified point.
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @license     The MIT License (MIT)
  * @author [tangjie](jie.tang@dfrobot.com)
@@ -8,8 +8,8 @@
  * @date  2024-08-14
  * @url https://github.com/DFRobot/DFRobot_TOF
  */
+
 #include "DFRobot_tof.h"
-#define DATA8X8 ///获取8x8矩阵数据
 #ifdef DATA8X8
 #define DATA 8
 #else

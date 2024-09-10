@@ -1,94 +1,121 @@
+/*!
+ * @file DFRobot_tof.h
+ * @brief This is the method documentation file for DFRobot_tof
+ * @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ * @license     The MIT License (MIT)
+ * @author [TangJie](jie.tang@dfrobot.com)
+ * @version  V1.0
+ * @date  2023-12-7
+ * @url https://github.com/DFRobot/DFRobot_TOF
+ */
 #ifndef _DFROBOT_TOF_H_
 #define _DFROBOT_TOF_H_
 #include "Arduino.h"
 #include "Wire.h"
 
-//#define ENABLE_DBG ///< 打开这个宏, 可以看到程序的详细运行过程
+//#define ENABLE_DBG ///< Enable this macro to view the detailed execution process of the program.
 #ifdef ENABLE_DBG
 #define DBG(...) {Serial.print("[");Serial.print(__FUNCTION__); Serial.print("(): "); Serial.print(__LINE__); Serial.print(" ] "); Serial.println(__VA_ARGS__);}
 #else
 #define DBG(...)
 #endif
 
+ /**
+  * @brief Select to get the obstacle position.
+  */
+typedef enum{
+    eLeft, 
+    eMiddle,
+    eRight,
+}eDir_t;
+
 class DFRobot_tof{
 public:
+    
     /**
      * @fn DFRobot_tof
-     * @brief tof 传感器的构造函数
-     * @param pWire 通信协议初始化
+     * @brief Constructor for the TOF sensor
+     * @param pWire Communication protocol initialization
      */
     DFRobot_tof(uint8_t addr = 0x30, TwoWire *pWire=&Wire);
-
+    
+    /**
+     * @fn begin
+     * @brief Initializes the sensor
+     * @return Returns the initialization status
+     */
     uint8_t begin(void);
 
     /**
      * @fn getAllDataConfig
-     * @brief 获取全部数据的配置
-     * @param matrix 配置传感器采样矩阵
-     * @param threshold 配置传感器报警阈值，范围50~3000，低于50按照原始数据输出
-     * @return 返回配置状态
-     * @retval 0 成功
-     * @retval 1 失败
+     * @brief Configures the retrieval of all data
+     * @param matrix Configuration matrix for sensor sampling
+     * @param threshold Sensor alarm threshold, range from 50 to 3000; below 50, output raw data
+     * @return Returns the configuration status
+     * @retval 0 Success
+     * @retval 1 Failure
      */
     uint8_t getAllDataConfig(uint8_t matrix, uint16_t threshold = 0);
 
     /**
      * @fn configAvoidance
-     * @brief 初始化避障
-     * @param wall 配置避障距离,单位：厘米
+     * @brief Initializes obstacle avoidance
+     * @param wall Configures the obstacle avoidance distance, in centimeters
      */
     uint8_t configAvoidance(uint8_t wall);
 
     /**
      * @fn getAllData
-     * @brief 获取全部数据
-     * @param buf 存储数据
+     * @brief Retrieves all data
+     * @param buf Buffer to store the data
      */
     uint8_t getAllData(void *buf);
 
     /**
      * @fn getFixedPointData
-     * @brief 获取指定点的数据
-     * @param x 坐标x
-     * @param y 坐标y
-     * @return 返回获取的数据
+     * @brief Retrieves data for a specific point
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return Returns the retrieved data
      */
     uint16_t getFixedPointData(uint8_t x, uint8_t y);
 
     /**
-     * @fn getLineData
-     * @brief 获取指定行数据
-     * @param line 行号
-     * @param buf 存储数据
+     * @fn requestObstacleSensorData
+     * @brief Requests obstacle avoidance data
+     * @return Returns the retrieval status
      */
-    uint8_t getLineData(uint8_t line, void *buf);
+    uint8_t requestObstacleSensorData(void);
 
     /**
-     * @fn getListData
-     * @brief 获取指定列数据
-     * @param list 列号
-     * @param buf 存储数据
+     * @fn getDir
+     * @brief Retrieves obstacle avoidance direction suggestions
+     * @return Returns the avoidance suggestions
      */
-    uint8_t getListData(uint8_t list, void *buf);
+    uint8_t getDir(void);
 
     /**
-     * @fn getAvoid
-     * @brief 获取避障返回的建议
-     * @param dir 建议小车前进的方向
-     * @param urgency 紧急避险状态
-     * @return 返回获取状态
+     * @fn getEmergencyFlag
+     * @brief Retrieves the emergency obstacle avoidance flag
+     * @return Returns the obstacle avoidance flag
      */
-    uint8_t getAvoid(uint8_t *dir, uint8_t *urgency);
+    uint8_t getEmergencyFlag(void);
 
     /**
      * @fn getObstacleDistance
-     * @brief 获取障碍物不同位置的距离
-     * @param L 左侧距离障碍物距离
-     * @param M 中间距离障碍物距离
-     * @param R 右侧距离障碍物距离
+     * @brief Requests the distance to obstacles
+     * @return Returns the request status
      */
-    uint8_t getObstacleDistance(uint16_t *L, uint16_t *M, uint16_t *R); 
+    uint8_t requestObstacleDistance(void); 
 
+    /**
+     * @fn getDistance
+     * @brief Retrieves the distance
+     * @return Returns the distance
+     */
+    uint16_t getDistance(eDir_t dir);
+
+    
 private:
     TwoWire *_pWire;
     uint8_t _addr;
