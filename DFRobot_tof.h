@@ -29,7 +29,7 @@ typedef enum{
     eRight,
 }eDir_t;
 
-class DFRobot_tof{
+class DFRobot_TOF{
 public:
     
     /**

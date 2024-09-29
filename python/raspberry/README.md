@@ -5,7 +5,7 @@ This is a user library for retrieving TOF sensor raw data and providing obstacle
 
 ![](./resources/images/SEN0628.png)
 
-## Product link(https://www.dfrobot.com.cn)
+## Product link(https://www.dfrobot.com)
 
     SKU：SEN0628
 

@@ -11,7 +11,7 @@
 
 #include "DFRobot_tof.h"
 
-DFRobot_tof tof;
+DFRobot_TOF tof;
 void setup(void){
   Serial.begin(115200);
   while(tof.begin() != 0){

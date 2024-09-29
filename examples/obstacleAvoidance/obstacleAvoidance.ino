@@ -11,14 +11,14 @@
 
 #include "DFRobot_tof.h"
 
-DFRobot_tof tof;
+DFRobot_TOF tof;
 uint16_t buf[2];
 
 
 #define L_M  1
-#define R_M 2
-#define CW 0
-#define CCW 1
+#define R_M  2
+#define CW   0
+#define CCW  1
 
 uint8_t nowDirection = 0;
 

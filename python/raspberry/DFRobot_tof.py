@@ -253,15 +253,15 @@ class DFRobot_TOF:
   
 	def _recv_packet(self, cmd):
 		'''!
-		  @brief Receive and parse the response data packet
-		  @param cmd Command to receive the packet
-		  @return Error code and response packet list
-		  @n      The zeroth element in the list: error code, only when the error code is ERR_CODE_NONE, there can be other elements
-		  @n      The first element in the list: response packet status code, 0x53-correct response packet 0x63-wrong response packet
-		  @n      The second element in the list: response packet command, which indicates the response packet belongs to which communication command
-		  @n      The third element in the list: low byte of the valid data length after the response packet
-		  @n      The fourth element in the list: high byte of the valid data length after the response packet
-		  @n      The 5th element or more in the list: valid data
+			@brief Receive and parse the response data packet
+			@param cmd Command to receive the packet
+			@return Error code and response packet list
+			@n      The zeroth element in the list: error code, only when the error code is ERR_CODE_NONE, there can be other elements
+			@n      The first element in the list: response packet status code, 0x53-correct response packet 0x63-wrong response packet
+			@n      The second element in the list: response packet command, which indicates the response packet belongs to which communication command
+			@n      The third element in the list: low byte of the valid data length after the response packet
+			@n      The fourth element in the list: high byte of the valid data length after the response packet
+			@n      The 5th element or more in the list: valid data
 		'''
 		rslt = [0]
 		t = time.time()
@@ -320,10 +320,10 @@ class DFRobot_TOF:
 
 	def _send_packet(self, pkt):
 		'''!
-	    @brief Send data
-	    @param pkt List of data to be sent
-	    @return None
-	  '''
+	    	@brief Send data
+	    	@param pkt List of data to be sent
+	    	@return None
+	  	'''
 		register = 0x55  
 		for data in pkt:
 			try:

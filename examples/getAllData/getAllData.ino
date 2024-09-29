@@ -15,7 +15,7 @@
 #else
 #define DATA 4
 #endif
-DFRobot_tof tof;
+DFRobot_TOF tof;
 uint16_t buf[DATA*DATA];
 char report[128];
 
