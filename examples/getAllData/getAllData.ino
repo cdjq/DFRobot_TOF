@@ -9,7 +9,7 @@
  * @url https://github.com/DFRobot/DFRobot_TOF
  */
 
-#include "DFRobot_tof.h"
+#include "DFRobot_TOF.h"
 #ifdef DATA8X8
 #define DATA 8
 #else

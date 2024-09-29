@@ -9,7 +9,7 @@
  * @url https://github.com/DFRobot/DFRobot_TOF
  */
 
-#include "DFRobot_tof.h"
+#include "DFRobot_TOF.h"
 
 DFRobot_TOF tof;
 void setup(void){

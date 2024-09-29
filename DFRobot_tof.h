@@ -37,7 +37,7 @@ public:
      * @brief Constructor for the TOF sensor
      * @param pWire Communication protocol initialization
      */
-    DFRobot_tof(uint8_t addr = 0x30, TwoWire *pWire=&Wire);
+    DFRobot_TOF(uint8_t addr = 0x30, TwoWire *pWire=&Wire);
     
     /**
      * @fn begin

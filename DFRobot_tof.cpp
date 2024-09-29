@@ -65,11 +65,11 @@ typedef struct{
   uint8_t buf[0];   /**< The array with 0-data length, its size depends on the value of the previous variables lenL and lenH */
 }__attribute__ ((packed)) sCmdRecvPkt_t, *pCmdRecvPkt_t;
 
-DFRobot_tof::DFRobot_tof(uint8_t addr, TwoWire *pWire):_pWire(pWire),_addr(addr),_timeout(DEBUG_TIMEOUT_MS){
+DFRobot_TOF::DFRobot_TOF(uint8_t addr, TwoWire *pWire):_pWire(pWire),_addr(addr),_timeout(DEBUG_TIMEOUT_MS){
 
 }
 
-uint8_t DFRobot_tof::begin(void){
+uint8_t DFRobot_TOF::begin(void){
   _pWire->begin();
   _pWire->beginTransmission(_addr);
   if(_pWire->endTransmission()){
@@ -78,7 +78,7 @@ uint8_t DFRobot_tof::begin(void){
   return 0;
 }
 
-uint8_t DFRobot_tof::getAllDataConfig(uint8_t matrix, uint16_t threshold){
+uint8_t DFRobot_TOF::getAllDataConfig(uint8_t matrix, uint16_t threshold){
   uint8_t length = 4;
   uint8_t errorCode;
   pCmdSendPkt_t sendpkt = NULL;
@@ -108,7 +108,7 @@ uint8_t DFRobot_tof::getAllDataConfig(uint8_t matrix, uint16_t threshold){
   return 1;
 }
 
-uint8_t DFRobot_tof::configAvoidance(uint8_t wall){
+uint8_t DFRobot_TOF::configAvoidance(uint8_t wall){
   uint8_t length = 2;
   uint8_t errorCode;
   uint16_t _wall = wall * 10;
@@ -136,7 +136,7 @@ uint8_t DFRobot_tof::configAvoidance(uint8_t wall){
   return 1;
 }
 
-uint8_t DFRobot_tof::getAllData(void *buf){
+uint8_t DFRobot_TOF::getAllData(void *buf){
   uint8_t length = 0;
   uint8_t errorCode;
   pCmdSendPkt_t sendpkt = NULL;
@@ -163,7 +163,7 @@ uint8_t DFRobot_tof::getAllData(void *buf){
   return 1;
 }
 
-uint16_t DFRobot_tof::getFixedPointData(uint8_t x, uint8_t y){
+uint16_t DFRobot_TOF::getFixedPointData(uint8_t x, uint8_t y){
   uint8_t length = 2;
   uint16_t ret = 0;
   uint8_t errorCode;
@@ -193,7 +193,7 @@ uint16_t DFRobot_tof::getFixedPointData(uint8_t x, uint8_t y){
   return 1;
 }
 
-uint8_t DFRobot_tof::requestObstacleSensorData(void){
+uint8_t DFRobot_TOF::requestObstacleSensorData(void){
   uint8_t length = 0;
   uint8_t errorCode;
   pCmdSendPkt_t sendpkt = NULL;
@@ -222,15 +222,15 @@ uint8_t DFRobot_tof::requestObstacleSensorData(void){
   return 1;
 }
 
-uint8_t DFRobot_tof::getDir(void){
+uint8_t DFRobot_TOF::getDir(void){
   return outDir;
 }
 
-uint8_t DFRobot_tof::getEmergencyFlag(void){
+uint8_t DFRobot_TOF::getEmergencyFlag(void){
   return outEmergencyFlag;
 }
 
-uint8_t DFRobot_tof::requestObstacleDistance(void){
+uint8_t DFRobot_TOF::requestObstacleDistance(void){
   uint8_t length = 0;
   uint8_t errorCode;
   pCmdSendPkt_t sendpkt = NULL;
@@ -260,7 +260,7 @@ uint8_t DFRobot_tof::requestObstacleDistance(void){
 
 }
 
-uint16_t DFRobot_tof::getDistance(eDir_t dir){
+uint16_t DFRobot_TOF::getDistance(eDir_t dir){
   uint16_t _ret = 0;
   switch(dir){
     case eLeft:
@@ -279,7 +279,7 @@ uint16_t DFRobot_tof::getDistance(eDir_t dir){
 }
 
 
-void DFRobot_tof::sendPacket(void *pkt, int length, bool stop){
+void DFRobot_TOF::sendPacket(void *pkt, int length, bool stop){
   uint8_t *pBuf = (uint8_t *)pkt;
   int remain = length;
   if((pkt == NULL) || (length == 0)) return;
@@ -300,7 +300,7 @@ void DFRobot_tof::sendPacket(void *pkt, int length, bool stop){
 }
 
 
-void * DFRobot_tof::recvPacket(uint8_t cmd, uint8_t *errorCode){
+void * DFRobot_TOF::recvPacket(uint8_t cmd, uint8_t *errorCode){
   if(cmd > CMD_END){
     DBG("cmd is error!");
     if(errorCode) *errorCode = ERR_CODE_CMD_INVAILED; //There is no this command
@@ -361,7 +361,7 @@ void * DFRobot_tof::recvPacket(uint8_t cmd, uint8_t *errorCode){
   return NULL;
 }
 
-int DFRobot_tof::recvData(void *data, int len){
+int DFRobot_TOF::recvData(void *data, int len){
   uint8_t *pBuf = (uint8_t *)data;
   int remain = len;
   int total = 0;
