@@ -109,7 +109,7 @@ void loop(void){
   tof.requestObstacleSensorData();
   uint8_t dir = tof.getDir();
   uint8_t urgency = tof.getEmergencyFlag();
- switch(dir){
+  switch(dir){
     case FORWARD:
       moveForward();
       break;

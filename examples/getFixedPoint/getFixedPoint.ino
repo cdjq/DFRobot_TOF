@@ -10,29 +10,25 @@
  */
 
 #include "DFRobot_TOF.h"
-#ifdef DATA8X8
-#define DATA 8
-#else
-#define DATA 4
-#endif
 DFRobot_TOF tof;
 uint16_t buf[64];
 void setup(void){
   Serial.begin(115200);
+
   while(tof.begin() != 0){
     Serial.println("begin error !!!!!");
   }
-   Serial.println("begin success");
+  Serial.println("begin success");
+  //config matrix mode
   while(tof.getAllDataConfig(eMatrix_8X8) != 0){
     Serial.println("init error !!!!!");
     delay(1000);
   }
   Serial.println("init success");
-  
-  
 }
 
 void loop(void){
+
     uint16_t data = tof.getFixedPointData(1,0);
     Serial.print(data);
     Serial.println(" mm");

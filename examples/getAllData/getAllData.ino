@@ -21,13 +21,12 @@ void setup(void){
     Serial.println("begin error !!!!!");
   }
    Serial.println("begin success");
+  //config matrix mode
   while(tof.getAllDataConfig(eMatrix_8X8) != 0){
     Serial.println("init error !!!!!");
     delay(1000);
   }
   Serial.println("init success");
-  
-  
 }
 
 void loop(void){
