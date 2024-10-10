@@ -35,16 +35,15 @@ To use this library, download the library file first, paste it into the \Arduino
      */
     uint8_t begin(void);
 
-    /**
+     /**
      * @fn getAllDataConfig
      * @brief Configures the retrieval of all data
      * @param matrix Configuration matrix for sensor sampling
-     * @param threshold Sensor alarm threshold, range from 50 to 3000; below 50, output raw data
      * @return Returns the configuration status
      * @retval 0 Success
      * @retval 1 Failure
      */
-    uint8_t getAllDataConfig(uint8_t matrix, uint16_t threshold = 0);
+    uint8_t getAllDataConfig(eMatrix_t matrix);
 
     /**
      * @fn configAvoidance

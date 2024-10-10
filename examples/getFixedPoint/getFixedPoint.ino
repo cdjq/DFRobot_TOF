@@ -23,7 +23,7 @@ void setup(void){
     Serial.println("begin error !!!!!");
   }
    Serial.println("begin success");
-  while(tof.getAllDataConfig(DATA,0) != 0){
+  while(tof.getAllDataConfig(eMatrix_8X8) != 0){
     Serial.println("init error !!!!!");
     delay(1000);
   }

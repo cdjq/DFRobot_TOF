@@ -17,14 +17,18 @@ void setup(void){
   while(tof.begin() != 0){
     Serial.println("begin error !!!!!");
   }
-   Serial.println("begin success");
+  Serial.println("begin success");
+  //When using obstacle avoidance, the matrix can only be set to 4*4
+  while(tof.getAllDataConfig(eMatrix_4x4) != 0){
+    Serial.println("init error !!!!!");
+    delay(1000);
+  }
  // Set the obstacle avoidance distance to 15 centimeters
   while(tof.configAvoidance(15) != 0){
     Serial.println("init avoid error !!!!!");
     delay(1000);
   }
   Serial.println("init success");
-  
 }
 
 void loop(void){

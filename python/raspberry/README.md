@@ -28,39 +28,38 @@ Before using this library, first download the library files, paste them into the
 ## Methods
 
 ```python
-    def begin(self):
+    def begin(self)
         """
             @fn begin
             @brief Initialize the sensor
             @return Returns the initialization status
         """
   
-    def get_all_data_config(self, matrix, threshold = 0):
+    def get_all_data_config(self, matrix)
         """
             @fn get_all_data_config
             @brief Configure the retrieval of all data
             @param matrix Configuration matrix for sensor sampling
-            @param threshold Sensor alarm threshold, range from 50 to 3000; if below 50, output 50 according to raw data
             @return Returns the configuration status
             @retval 0 Success
             @retval 1 Failure
         """
   
-    def config_avoidance(self, wall):
+    def config_avoidance(self, wall)
         '''!
         @fn   config_avoidance
       @brief Initialize obstacle avoidance
       @param wall Configures the obstacle avoidance distance, in centimeters
     '''
       
-    def get_all_data(self):
+    def get_all_data(self)
         '''!
       @fn get_all_data
       @brief Retrieve all data
       @return Returns the retrieved data
     '''
     
-    def get_fixed_point_data(self, x, y):
+    def get_fixed_point_data(self, x, y)
         '''!
             @fn get_fixed_point_data
       @brief Retrieve data for a specific coordinate
@@ -69,35 +68,35 @@ Before using this library, first download the library files, paste them into the
       @return Returns the retrieved data
     '''
     
-    def request_obstacle_sensor_data(self):
+    def request_obstacle_sensor_data(self)
         '''!
             @fn request_obstacle_sensor_data
       @brief Request obstacle sensor data
       @return Returns the retrieval status
     '''
     
-    def get_dir(self):
+    def get_dir(self)
         '''!
       @fn get_dir
       @brief Retrieve obstacle avoidance direction suggestions
       @return Returns the obstacle avoidance direction suggestions
     '''
     
-    def get_emergency_flag(self):
+    def get_emergency_flag(self)
         '''!
       @fn get_emergency_flag
       @brief Retrieve the emergency obstacle avoidance flag
       @return Returns the obstacle avoidance flag
     '''
     
-    def request_obstacle_distance(self):
+    def request_obstacle_distance(self)
         '''!
             @fn request_obstacle_distance
       @brief Request the distance to obstacles
       @return Returns the request status
     '''
     
-    def get_distance(self, dir):
+    def get_distance(self, dir)
         '''!
             @fn get_distance
       @brief Retrieve distance data

@@ -28,39 +28,38 @@
 ## 方法
 
 ```python
-def begin(self):
+def begin(self)
 		"""
 			@fn begin
 			@brief 初始化传感器
 			@return 返回初始化状态
 		"""
   
-	def get_all_data_config(self, matrix, threshold = 0):
+	def get_all_data_config(self, matrix)
 		"""
 			@fn get_all_data_config
 			@brief 获取全部数据的配置
 			@param matrix 配置传感器采样矩阵
-			@param threshold 配置传感器报警阈值，范围50~3000，低于50按照原始数据输出50
 			@return 返回配置状态
 			@retval 0 成功
 			@retval 1 失败
 		"""
   
-	def config_avoidance(self, wall):
+	def config_avoidance(self, wall)
 		'''!
     	@fn   config_avoidance
       @brief 初始化避障
       @param wall 配置避障距离，单位：厘米
     '''
       
-	def get_all_data(self):
+	def get_all_data(self)
 		'''!
       @fn get_all_data
       @brief 获取全部数据
       @return 返回获取的数据
     '''
     
-	def get_fixed_point_data(self, x, y):
+	def get_fixed_point_data(self, x, y)
 		'''!
 			@fn get_fixed_point_data
       @brief 获取指定桌标的数据
@@ -69,35 +68,35 @@ def begin(self):
       @return 返回获取的数据
     '''
     
-	def request_obstacle_sensor_data(self):
+	def request_obstacle_sensor_data(self)
 		'''!
 			@fn request_obstacle_sensor_data
       @brief 请求避障数据
       @return 返回获取状态
     '''
     
-	def get_dir(self):
+	def get_dir(self)
 		'''!
       @fn get_dir
       @brief 获取避障方向建议
       @return 返回避障方向建议
     '''
     
-	def get_emergency_flag(self):
+	def get_emergency_flag(self)
 		'''!
       @fn get_emergency_flag
       @brief 获取紧急避障标志
       @return 返回避障标志
     '''
     
-	def request_obstacle_distance(self):
+	def request_obstacle_distance(self)
 		'''!
 			@fn request_obstacle_distance
       @brief 请求障碍物距离
       @return 返回请求状态
     '''
     
-	def get_diatance(self,dir):
+	def get_diatance(self,dir)
 		'''!
 			@fn get_diatance
       @brief 获取距离数据

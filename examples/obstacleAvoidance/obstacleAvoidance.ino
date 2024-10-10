@@ -22,9 +22,9 @@ uint16_t buf[2];
 
 uint8_t nowDirection = 0;
 
-#define FORWARD  2
-#define LEFT  4
-#define RIGHT  1
+#define FORWARD  3
+#define LEFT  1
+#define RIGHT  2
 
 void motor(uint8_t speed, uint8_t dir, uint8_t mt){
     Wire.beginTransmission(0x10);
@@ -88,7 +88,13 @@ void setup(void){
   while(tof.begin() != 0){
     Serial.println("begin error !!!!!");
   }
-   Serial.println("begin success");
+  Serial.println("begin success");
+
+  //When using obstacle avoidance, the matrix can only be set to 4*4
+  while(tof.getAllDataConfig(eMatrix_4x4) != 0){
+    Serial.println("init error !!!!!");
+    delay(1000);
+  }
 
  // Set the obstacle avoidance distance to 15 centimeters
   while(tof.configAvoidance(15) != 0){
@@ -96,8 +102,6 @@ void setup(void){
     delay(1000);
   }
   Serial.println("init success");
-  
-  
 }
 
 void loop(void){

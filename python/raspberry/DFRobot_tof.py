@@ -78,12 +78,11 @@ class DFRobot_TOF:
 		"""
 		return 0
   
-	def get_all_data_config(self, matrix, threshold = 0):
+	def get_all_data_config(self, matrix):
 		"""
 			@fn get_all_data_config
 			@brief Retrieve the configuration for all data
 			@param matrix Configure the sensor sampling matrix
-			@param threshold Configure the sensor alarm threshold, range 50~3000; below 50, output raw data
 			@return Returns the configuration status
 			@retval 0 Success
 			@retval 1 Failure
@@ -94,8 +93,8 @@ class DFRobot_TOF:
 		pkt[self.INDEX_ARGS_NUM_L] = (length+1) & 0xFF
 		pkt[self.INDEX_CMD]        = self.CMD_SETMODE
 		pkt[3]        = 0
-		pkt[4]        = threshold & 0xff
-		pkt[5]        = (threshold >> 8) & 0xff
+		pkt[4]        = 0
+		pkt[5]        = 0
 		pkt[6]        = matrix
 		self._send_packet(pkt)
 		time.sleep(0.1)
@@ -229,9 +228,9 @@ class DFRobot_TOF:
 		if (len(recv_pkt) >= 5) and (recv_pkt[self.INDEX_RES_ERR] == self.ERR_CODE_NONE and recv_pkt[self.INDEX_RES_STATUS] == self.STATUS_SUCCESS):
 			length = recv_pkt[self.INDEX_RES_LEN_L] | (recv_pkt[self.INDEX_RES_LEN_H] << 8)
 			if length:
-				self._left =  recv_pkt[self.INDEX_RES_DATA ] | recv_pkt[self.INDEX_RES_DATA + 1] << 8
-				self._middle = recv_pkt[self.INDEX_RES_DATA + 2] | recv_pkt[self.INDEX_RES_DATA + 3] << 8
-				self._right = recv_pkt[self.INDEX_RES_DATA + 4] | recv_pkt[self.INDEX_RES_DATA + 5] << 8
+				self._left =  (recv_pkt[self.INDEX_RES_DATA ] | recv_pkt[self.INDEX_RES_DATA + 1] << 8) / 10
+				self._middle = (recv_pkt[self.INDEX_RES_DATA + 2] | recv_pkt[self.INDEX_RES_DATA + 3] << 8) / 10
+				self._right = (recv_pkt[self.INDEX_RES_DATA + 4] | recv_pkt[self.INDEX_RES_DATA + 5] << 8) / 10
 			return 0
 		return 1
     

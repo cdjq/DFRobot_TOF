@@ -26,7 +26,7 @@ def setup():
   while tof.begin() != 0:
     print("begin error!!!!")
     time.sleep(1)
-  while tof.get_all_data_config(4,0) != 0:
+  while tof.get_all_data_config(4) != 0:
     print("init error")
     time.sleep(1)
     

@@ -10,13 +10,9 @@
  */
 
 #include "DFRobot_TOF.h"
-#ifdef DATA8X8
-#define DATA 8
-#else
-#define DATA 4
-#endif
+
 DFRobot_TOF tof;
-uint16_t buf[DATA*DATA];
+uint16_t buf[64];
 char report[128];
 
 void setup(void){
@@ -25,7 +21,7 @@ void setup(void){
     Serial.println("begin error !!!!!");
   }
    Serial.println("begin success");
-  while(tof.getAllDataConfig(DATA,0) != 0){
+  while(tof.getAllDataConfig(eMatrix_8X8) != 0){
     Serial.println("init error !!!!!");
     delay(1000);
   }
@@ -36,7 +32,7 @@ void setup(void){
 
 void loop(void){
   tof.getAllData(buf);
-  for (int i = 0; i < DATA * DATA; i++) {
+  for (int i = 0; i < 64; i++) {
     snprintf(report, sizeof(report), "Zone : %3d, Distance : %4d mm\r\n",
                  i,
                  buf[i]);

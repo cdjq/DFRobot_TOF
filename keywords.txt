@@ -29,3 +29,5 @@ getDistance	KEYWORD2
 eLeft   LITERAL1
 eMiddle   LITERAL1
 eRight   LITERAL1
+eMatrix_4x4   LITERAL1
+eMatrix_8X8   LITERAL1

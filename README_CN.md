@@ -39,12 +39,11 @@
      * @fn getAllDataConfig
      * @brief 获取全部数据的配置
      * @param matrix 配置传感器采样矩阵
-     * @param threshold 配置传感器报警阈值，范围50~3000，低于50按照原始数据输出
      * @return 返回配置状态
      * @retval 0 成功
      * @retval 1 失败
      */
-    uint8_t getAllDataConfig(uint8_t matrix, uint16_t threshold = 0);
+     uint8_t getAllDataConfig(eMatrix_t matrix);
 
     /**
      * @fn configAvoidance

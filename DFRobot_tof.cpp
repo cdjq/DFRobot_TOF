@@ -78,7 +78,7 @@ uint8_t DFRobot_TOF::begin(void){
   return 0;
 }
 
-uint8_t DFRobot_TOF::getAllDataConfig(uint8_t matrix, uint16_t threshold){
+uint8_t DFRobot_TOF::getAllDataConfig(eMatrix_t matrix){
   uint8_t length = 4;
   uint8_t errorCode;
   pCmdSendPkt_t sendpkt = NULL;
@@ -89,8 +89,8 @@ uint8_t DFRobot_TOF::getAllDataConfig(uint8_t matrix, uint16_t threshold){
   sendpkt->argsNumL = (length + 1) & 0xFF;
   sendpkt->cmd = CMD_SETMODE;
   sendpkt->args[0] = 0;
-  sendpkt->args[1] = threshold & 0xff;
-  sendpkt->args[2] = (threshold >> 8) & 0xff;
+  sendpkt->args[1] = 0;
+  sendpkt->args[2] = 0;
   sendpkt->args[3] = matrix;
   
   length += sizeof(sCmdSendPkt_t);
@@ -250,9 +250,9 @@ uint8_t DFRobot_TOF::requestObstacleDistance(void){
   if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
     length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
     DBG(length);
-    outLeft = rcvpkt->buf[0] | rcvpkt->buf[1] << 8;
-    outMiddle = rcvpkt->buf[2] | rcvpkt->buf[3] << 8;
-    outRight =rcvpkt->buf[4] | rcvpkt->buf[5] << 8;
+    outLeft = (rcvpkt->buf[0] | rcvpkt->buf[1] << 8) / 10;
+    outMiddle = (rcvpkt->buf[2] | rcvpkt->buf[3] << 8) / 10;
+    outRight = (rcvpkt->buf[4] | rcvpkt->buf[5] << 8) / 10;
     if(rcvpkt) free(rcvpkt);
     return 0;
   }
